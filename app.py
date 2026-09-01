@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 import pandas as pd
 from PIL import Image
 import json
@@ -46,9 +46,8 @@ if uploaded_files:
             st.error("サイドバーに Gemini APIキーを入力してください。")
         else:
             try:
-                # 安定版のAPI設定
-                genai.configure(api_key=api_key)
-                model = genai.GenerativeModel('models/gemini-flash-latest')
+                # --- 最新の公式クライアント初期化（フリーズ防止対応） ---
+                client = genai.Client(api_key=api_key)
                 
                 raw_inventory = {}
                 progress_bar = st.progress(0)
@@ -74,7 +73,11 @@ if uploaded_files:
                     ]
                     """
                     
-                    response = model.generate_content([image, prompt])
+                    # 安定した最新モデルと正しいクライアントメソッドで呼び出し
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=[image, prompt]
+                    )
                     
                     text = response.text
                     text = re.sub(r"```json|```", "", text).strip()
