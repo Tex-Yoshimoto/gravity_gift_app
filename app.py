@@ -48,7 +48,7 @@ if uploaded_files:
             try:
                 # 安定版のAPI設定
                 genai.configure(api_key=api_key)
-                model = genai.GenerativeModel('gemini-flash-latest')
+                model = genai.GenerativeModel('models/gemini-flash-latest')
                 
                 raw_inventory = {}
                 progress_bar = st.progress(0)
